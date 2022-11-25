@@ -289,3 +289,182 @@ var nums = [7, 45, 59, 103]
 print(hasAnyMatches(list: nums, condition: isEven))
 // Prints false
 
+// MARK: CLOSURE
+// You can write a closure w/out a name by surrounding it with braces ({})
+// Use in to separate the arguments and return type from the body.
+
+let three_of_nums: [Int] = nums.map( { (num: Int) -> Int in
+    let res = num * 3
+    return res
+})
+
+print(three_of_nums)
+
+// MARK: EXPERIMENT 6
+// Rewrite the closure to return zero for all odd numbers.
+let zeroes_for_odd = nums.map( { num in
+    var res = []
+    if num % 2 != 0{
+        res.append(0)
+    }
+    return res
+})
+
+// To write closures more consisely, when the closure's type is already known
+// such as a callback for a delegate, you can omit the type of its params and
+// its return type.
+// Single statement closures implicitly return the value of their only statement
+
+let doubleNums  = nums.map( {num in
+    num*2
+})
+print(doubleNums)
+// Prints "[14, 90, 118, 206]"
+
+// When a closure is the only argument to a func, you can omit the
+// parantheses entirely.
+
+
+// MARK: - 4 Objects and Classes
+
+// Use class followed by the class's name to create a class.
+// Ppty declaration is written in the same way as a constant or car declaration,
+// except it's in the context of a class. Same go for methods and functions.
+
+class Shape {
+    var numberOfSides = 0
+    let instrument = "Pencil"
+    
+    func simpleDescription() -> String {
+        return "A shape with \(numberOfSides) sides."
+    }
+    
+    func draw(times: Int) -> String {
+        return "Drawing shape \(times) number of times with a \(instrument)"
+    }
+}
+
+
+// MARK: EXPERIMENT 7
+// Add a constant ppty with let, and add another method that takes an argument.
+// Done: Added Instrument and draw
+
+// Create a class by putting parentheses after the class name
+// Use dot syntax to access the ppties and methods of the instance.
+
+var shape = Shape()
+shape.numberOfSides = 4
+var shapeDescription = shape.simpleDescription()
+
+// Use init to create an initializer (ctor in other langs)
+
+class NamedShape {
+    var numberOfSides : Int = 0
+    var name: String
+    
+    init(name: String){
+        self.name = name
+    }
+    
+    func simpleDescription() -> String {
+        return "A shape with \(numberOfSides) sides."
+    }
+}
+
+
+// Every ppty of a class needs a value assigned:
+// Either in Declaration (numberOfSides)
+// Or in the initializer (name).
+
+// Use denit to create a deinitializer to perform
+// cleanup before an object is deallocated.
+
+// SUbclasses include their superclass name after their
+// class name, with a colon separating both names.
+// Methods that override the superclass's implementation are marked
+// with override.
+
+class Square: NamedShape {
+    var sideLength: Double
+    
+    init(sideLength: Double, name: String) {
+        self.sideLength = sideLength
+        super.init(name: name)
+        numberOfSides = 4
+    }
+    
+    func perimeter() -> Double {
+        return 4 * sideLength
+    }
+    
+    override func simpleDescription() -> String {
+        return "A square with 4 sides, each of length \(sideLength)"
+    }
+}
+
+let testShape = Square(sideLength: 50, name: "the test square")
+print(testShape.perimeter()) // Prints 200
+print(testShape.simpleDescription())
+
+
+// MARK: - EXPERIMENT 8
+// Make another subclass of NamedShape called Circle that takes a
+// radius and a name as arguments to its initializer.
+// Implement an area() and a simpleDescription() method on the
+// Circle class.
+
+class Circle: NamedShape{
+    var radius: Double
+    
+    init(radius: Double, name: String) {
+        self.radius = radius
+        super.init(name: name)
+    }
+    
+    func area() -> Double {
+        return (22.0/7.0) * radius * radius
+    }
+    
+    override func simpleDescription() -> String {
+        return "This is a circle called \(name), it's radius is \(radius) and it's area is \(area())"
+    }
+}
+
+let testCircle = Circle(radius: 5, name: "the test circle")
+print(testCircle.area())
+print(testCircle.simpleDescription())
+
+
+// Properties can have getters and setters.
+
+class EquilateralTriangle: NamedShape {
+    var sideLength: Double = 0.0
+    
+    init(sideLength: Double, name: String) {
+        self.sideLength = sideLength // Setting the value of ppties that the subclass declares
+        super.init(name: name)  // Calling the superclass' initializer
+        numberOfSides = 3  //  Changing the value of ppties defined in the superclass
+    }
+    
+    // Getter and setter of a ppty called perimeter
+    var perimeter: Double {
+        get {
+            return 3.0 * sideLength
+        }
+        
+        set {
+            // setter's new Value has an implicit name newValue.
+            sideLength = newValue / 3.0
+        }
+    }
+    
+    override func simpleDescription() -> String {
+        return "An equilateral triangle with sides of length \(sideLength)."
+    }
+    
+}
+
+var triangle = EquilateralTriangle(sideLength: 5.6, name: "the triangle")
+print(triangle.perimeter)
+print(triangle.sideLength)
+
