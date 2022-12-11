@@ -468,3 +468,157 @@ var triangle = EquilateralTriangle(sideLength: 5.6, name: "the triangle")
 print(triangle.perimeter)
 print(triangle.sideLength)
 
+
+// If you don't need to compute the property but still need
+// to provide cide that's run before and after setting a
+// new value, you can use willSet and didSet.
+// Provided code runs anytime the value changes outside the initializer.
+
+class TriangleAndSquare {
+    var triangle: EquilateralTriangle {
+        willSet {
+            print("About to change triangle, ensuring square side length is the same...")
+            square.sideLength = newValue.sideLength
+        }
+    }
+    
+    var square : Square {
+        willSet {
+            print("About to change square, ensuring triangle side length is the same...")
+            triangle.sideLength = newValue.sideLength
+        }
+    }
+    
+    init(size: Double, name: String) {
+        square = Square(sideLength: size, name: name)
+        triangle = EquilateralTriangle(sideLength: size, name: name)
+    }
+}
+
+// The above class ensures the sidelength of its triangle ppty
+// is the same as the sidelength of its square ppty.
+
+var mySpecialShape = TriangleAndSquare(size: 10, name: "Special Shape")
+
+print("Triangle side length: ", mySpecialShape.triangle.sideLength) // expect 10
+print("Square side length: ", mySpecialShape.square.sideLength) // expect 10
+
+print("Changing mySpecial shape's triangle ppty to 20 : ")
+mySpecialShape.triangle = EquilateralTriangle(sideLength: 20, name: "Larger Triangle")
+
+print("After changing the triangle, the square side length is : ", mySpecialShape.triangle.sideLength)
+var anotherSpecialShape = TriangleAndSquare(size: 40, name: "Another Special Shape")
+
+
+// When working with optional values, you can write ? before operations
+// such as methods, ppties, & subscripting. If the value before the ?
+// is nil then everything after ? is ignored and the val of entire expr
+// is nil. Otherwise, the optional value is unwrapped.
+// In both cases, the value of the entire expression is optional.
+
+let optionalSquare: Square? = Square(sideLength: 3.6, name: "optional square")
+let sideLength = optionalSquare?.sideLength
+
+
+// MARK: - 5 ENUMERATIONS AND STRUCTURES
+
+// Use enum to create an enumeration.
+// Like classes and all other named types, enumerations can have
+// methods associated with them.
+
+enum Rank: Int {
+    case ace = 1
+    case two, three, four, five, six, seven, eight, nine, ten
+    case jack, queen, king
+    
+    func simpleDescription() -> String {
+        switch self {
+        case .ace:
+            return "ace"
+        case .jack:
+            return "jack"
+        case .queen:
+            return "queen"
+        case .king:
+            return "king"
+        default:
+            return String(self.rawValue)
+        }
+    }
+}
+
+// The above enum is meant to represent the ranks of a deck of cards.
+// By defualt, Swift assigns raw values starting at 0 and incrementing by one each time.
+// You can change this behaviour by explicitly specifying values like the example above.
+// You can also use strings or floating point values as the raw type of an enumeration.
+// Use the rawValue ppty to access the raw value of an enumeration case.
+
+
+// MARK: - EXPERIMENT 9
+// Write a function that compares two Rank values by comapring their raw values
+func compareRank(rank1: Rank, rank2: Rank) -> String{
+    if rank1.rawValue < rank2.rawValue {
+        return "\(rank1) is less than \(rank2) !"
+    }
+    else if rank1.rawValue > rank2.rawValue {
+        return "\(rank1) is greater than \(rank2) !"
+    }
+    else {
+        return "Both ranks are equal !"
+    }
+}
+
+
+// Use init?(rawValue) initializer to create an instance of an enumeration
+// from a raw value. It either returns the enum case matching the raw value
+// or nil if there's no matching case.
+
+if let fourthRank =  Rank(rawValue: 4) {
+    let fourthDesc = fourthRank.simpleDescription()
+    print(fourthDesc) // expect to print 4
+}
+
+
+// The case value of an enumeration are actual values and not another
+// another way of writing their raw values.
+// In fact if there isn't a meaningful raw value, you don't have to provide one(See below)
+enum Suit {
+    case spades, hearts, diamonds, clubs
+    
+    func simpleDescription() -> String {
+        switch self {
+        case .spades:
+            return "spades"
+        case .hearts:
+            return "hearts"
+        case .diamonds:
+            return "diamonds"
+        case .clubs:
+            return "clubs"
+        }
+    }
+    
+    func color() -> String {
+        if self == .hearts || self == .clubs{
+            return "red"
+        }
+        else {
+            return "black"
+        }
+    }
+}
+
+let hearts = Suit.hearts
+let heartsDesc = hearts.simpleDescription()
+print(heartsDesc) // expect to print hearts
+
+// MARK: - EXPERIMENT 10
+// Add a color method to Suit that returns "black" for spades and clubs,
+// and returns "red" for hearts and diamonds.
+// DONE ABOVE ! (added a color method).
+
+
+// You can use the abbreviated form of an enum case anytime the type is
+// already known.
+let clubs: Suit = .clubs
+
